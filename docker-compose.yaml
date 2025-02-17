@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:alpine
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${LOCAL_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${LOCAL_POSTGRES_SECRET}
+      POSTGRES_DB: ${LOCAL_POSTGRES_DBNAME}
+    ports:
+      - "${LOCAL_POSTGRES_PORT}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: ${AMQP_USER}
+      RABBITMQ_DEFAULT_PASS: ${AMQP_PASS}
+    ports:
+      - "${AMQP_PORT}:5672"
+      - "15672:15672"
+
+volumes:
+  pgdata:
