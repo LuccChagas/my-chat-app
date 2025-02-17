@@ -1,5 +1,9 @@
-package main
+package models
 
-func main() {
+import "time"
 
+type Message struct {
+	Timestamp time.Time
+	Content   string
+	Author    string
 }
