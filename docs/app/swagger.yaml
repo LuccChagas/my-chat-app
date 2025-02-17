@@ -1,0 +1,152 @@
+basePath: /
+definitions:
+  github_com_LuccChagas_my-chat-app_internal_models.UserRequest:
+    properties:
+      cpf:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      nick_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - cpf
+    - email
+    - first_name
+    - last_name
+    - name
+    - nick_name
+    - password
+    - phone
+    type: object
+  github_com_LuccChagas_my-chat-app_internal_models.UserResponse:
+    properties:
+      cpf:
+        type: string
+      created_at:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      name:
+        type: string
+      nick_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      updated_at:
+        $ref: '#/definitions/sql.NullTime'
+    type: object
+  sql.NullTime:
+    properties:
+      time:
+        type: string
+      valid:
+        description: Valid is true if Time is not NULL
+        type: boolean
+    type: object
+host: localhost:1323
+info:
+  contact:
+    email: luccaa.chagas23@gmail.com
+    name: API Support
+    url: https://www.linkedin.com/in/luccas-machado-ab5897105/
+  description: API documentation for My Chat App, a real-time chat application.
+  title: My Chat App API
+  version: "1.0"
+paths:
+  /user/{id}:
+    get:
+      description: Retrieve a user by their ID.
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_LuccChagas_my-chat-app_internal_models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get user by ID
+      tags:
+      - User
+  /user/all:
+    get:
+      description: Retrieve a list of all registered users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/github_com_LuccChagas_my-chat-app_internal_models.UserResponse'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Get all users
+      tags:
+      - User
+  /user/register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user with the provided details.
+      parameters:
+      - description: User Request
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_LuccChagas_my-chat-app_internal_models.UserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_LuccChagas_my-chat-app_internal_models.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            type: string
+      summary: Create a new user
+      tags:
+      - User
+schemes:
+- http
+swagger: "2.0"

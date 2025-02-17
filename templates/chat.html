@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat WebSocket</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 20px;
+        }
+        #chatContainer {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        #chatBox {
+            list-style: none;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-bottom: 1px solid #eee;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            white-space: pre-wrap;
+        }
+        #chatBox li {
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+        }
+        #msgForm {
+            display: flex;
+        }
+        #msgInput {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        #sendBtn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        #sendBtn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+<div id="chatContainer">
+    <ul id="chatBox"></ul>
+    <form id="msgForm" onsubmit="return false;">
+        <input id="msgInput" type="text" placeholder="Digite sua mensagem..." autocomplete="off" required>
+        <button id="sendBtn" type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+    // Cria a conexão com o endpoint WebSocket
+    const socket = new WebSocket("ws://localhost:1323/ws");
+
+    socket.onopen = function() {
+        console.log("Conexão WebSocket estabelecida!");
+    };
+
+    socket.onmessage = function(event) {
+        const chatBox = document.getElementById("chatBox");
+        const li = document.createElement("li");
+        li.textContent = event.data;
+        chatBox.appendChild(li);
+        // Opcional: rolar para o final da lista automaticamente
+        chatBox.scrollTop = chatBox.scrollHeight;
+    };
+
+    socket.onerror = function(error) {
+        console.error("Erro na conexão WebSocket:", error);
+    };
+
+    // Envia a mensagem quando o botão for clicado ou ao pressionar "Enter"
+    document.getElementById("sendBtn").addEventListener("click", sendMessage);
+    document.getElementById("msgInput").addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            sendMessage();
+        }
+    });
+
+    function sendMessage() {
+        const msgInput = document.getElementById("msgInput");
+        const msg = msgInput.value.trim();
+        if (msg !== "") {
+            socket.send(msg);
+            msgInput.value = "";
+        }
+    }
+</script>
+</body>
+</html>
